@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Martin's MathBlaster</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        #game-container {
+            margin-top: 50px;
+        }
+        img {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        #question {
+            font-size: 24px;
+            margin: 20px;
+        }
+        #feedback {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Welcome to Martin's MathBlaster!</h1>
+<img src="MARTIN_small.jpg" alt="Martin">
+<div id="game-container">
+    <div id="question"></div>
+    <input type="number" id="answer" placeholder="Your answer">
+    <button onclick="checkAnswer()">Submit</button>
+    <div id="feedback"></div>
+    <div id="score"></div>
+    <img id="resultImage" style="display:none;">
+</div>
+
+<audio id="correctSound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+<audio id="wrongSound" src="https://www.soundjay.com/button/beep-10.wav"></audio>
+
+<script>
+    let questions = [];
+    let score = 0;
+    let currentQuestion = 0;
+
+    function generateQuestions() {
+        for (let i = 0; i < 20; i++) {
+            let num1 = Math.floor(Math.random() * 20) + 1;
+            let num2 = Math.floor(Math.random() * 20) + 1;
+            let answer = num1 + num2;
+            questions.push({question: num1 + " + " + num2, answer: answer});
+        }
+    }
+
+    function showQuestion() {
+        document.getElementById("question").innerText = "Question " + (currentQuestion + 1) + ": " + questions[currentQuestion].question;
+        document.getElementById("answer").value = "";
+        document.getElementById("feedback").innerText = "";
+        document.getElementById("resultImage").style.display = "none";
+    }
+
+    function checkAnswer() {
+        let userAnswer = parseInt(document.getElementById("answer").value);
+        let feedback = document.getElementById("feedback");
+        let img = document.getElementById("resultImage");
+
+        if (userAnswer === questions[currentQuestion].answer) {
+            score++;
+            feedback.innerText = "Good Job!";
+            img.src = "MUM_small.jpg";
+            document.getElementById("correctSound").play();
+        } else {
+            feedback.innerText = "Come on Martin!";
+            img.src = "DAD_small.jpg";
+            document.getElementById("wrongSound").play();
+        }
+        img.style.display = "block";
+
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+            setTimeout(showQuestion, 2000);
+        } else {
+            setTimeout(showFinalScore, 2000);
+        }
+    }
+
+    function showFinalScore() {
+        document.getElementById("game-container").innerHTML = "<h2>Your Score: " + score + " / " + questions.length + "</h2>" +
+        "<p>You got it from your sister!</p><img src='SISTER_small.jpg'>";
+    }
+
+    generateQuestions();
+    showQuestion();
+</script>
+
+</body>
+</html>
